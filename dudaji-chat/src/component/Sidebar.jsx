@@ -5,12 +5,14 @@ import {
   AiOutlineSearch,
   AiFillSetting,
   AiOutlineUsergroupAdd,
+  AiFillCloseCircle,
 } from "react-icons/ai";
 
 export default function Sidebar({ socket, setSelectedRoom, username }) {
   const [rooms, setRooms] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [newRoomName, setNewRoomName] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
 
   // Load room list from server
   useEffect(() => {
@@ -78,32 +80,42 @@ export default function Sidebar({ socket, setSelectedRoom, username }) {
     );
   };
 
- const handleCreate = async () => {
-  if (!newRoomName.trim()) return;
-  if (!username) {
-    console.error("Username chưa sẵn sàng!");
-    return;
-  }
+  const handleCreate = async () => {
+    if (!newRoomName.trim()) return;
+    if (!username) {
+      console.error("Username chưa sẵn sàng!");
+      return;
+    }
 
-  console.log("Sending createRoom:", { name: newRoomName, createdBy: username });
+    try {
+      await axios.post("http://localhost:5000/createRoom", {
+        name: newRoomName,
+        createdBy: username, // hoặc userId
+      });
+      setNewRoomName("");
+      setShowModal(false);
+    } catch (error) {
+      console.error(
+        "Error creating group:",
+        error.response?.data || error.message
+      );
+    }
+  };
 
-  try {
-    await axios.post("http://localhost:5000/createRoom", {
-      name: newRoomName,
-      createdBy: username, // hoặc userId
-    });
-    setNewRoomName("");
-    setShowModal(false);
-  } catch (error) {
-    console.error("Error creating group:", error.response?.data || error.message);
-  }
-};
+  const handleLogout = async () => {
+    try {
+      await axios.post("http://localhost:5000/logout");
+      localStorage.removeItem("username"); 
+    } catch (error) {
+      console.error("Logout error:", error.response?.data || error.message);
+    }
+  };
 
   return (
     <aside className="flex w-96 h-screen text-xl bg-white border-r border-r-[#122670] ">
       <div className="flex flex-col justify-between items-center w-1/5 h-full bg-[#122670] ">
         <AiFillWechat className="w-8 h-8 mt-4 text-amber-50" />
-        <div className="flex flex-col gap-6 text-amber-50">
+        <div className=" flex flex-col gap-6 text-amber-50">
           <button
             type="button"
             className="bg-[#122670] hover:bg-yellow-100 hover:text-black px-2 py-2 rounded-full text-amber-50 font-bold"
@@ -113,10 +125,22 @@ export default function Sidebar({ socket, setSelectedRoom, username }) {
           </button>
           <button
             type="button"
-            className="bg-[#122670] hover:bg-yellow-100 hover:text-black px-2 py-2 rounded-full text-amber-50 font-bold"
+            className="relative bg-[#122670] hover:bg-yellow-100 hover:text-black px-2 py-2 rounded-full text-amber-50 font-bold"
+            onClick={() => setShowDropdown((prev) => !prev)}
           >
             <AiFillSetting className="w-6 h-6" />
           </button>
+
+          {showDropdown && (
+            <div className="absolute mt-25 ml-5 w-40 bg-white border shadow-lg z-10">
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left px-4 py-2 text-black hover:bg-gray-50"
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
         <img
           src={`https://api.dicebear.com/9.x/initials/svg?seed=${username}`}
@@ -139,11 +163,8 @@ export default function Sidebar({ socket, setSelectedRoom, username }) {
           </div>
         </div>
 
-        {/* userName */}
-        {/* <div className="text-black  text-center my-5">Hello, {username}</div> */}
-
         {/* Room List */}
-        <ul className="text overflow-y-auto text-left ml-2">
+        <ul className="h-[86%] text overflow-y-auto  text-left ml-2">
           {rooms.map((room, i) => (
             <li
               key={room.id || i}
@@ -177,28 +198,41 @@ export default function Sidebar({ socket, setSelectedRoom, username }) {
 
       {/* Modal create group */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-bold mb-4">Tạo nhóm mới</h2>
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-100/70">
+          <div className="bg-white p-0.5 rounded-lg shadow-lg w-96">
+            {/* header */}
+            <div className="flex items-center justify-between bg-[#122670] p-2 w-full rounded-t-lg mb-4">
+              <h2 className="text-xl font-bold text-white ml-2 mb-4">
+                Create group
+              </h2>
+              <button
+                className="flex justify-center items-center w-8 h-8 hover:bg-amber-50  rounded-full "
+                onClick={() => setShowModal(false)}
+              >
+                <AiFillCloseCircle className="w-8 h-8 text-white hover:text-[#122670]" />
+              </button>
+            </div>
             <input
               type="text"
               value={newRoomName}
               onChange={(e) => setNewRoomName(e.target.value)}
-              placeholder="Nhập tên nhóm"
-              className="border p-2 rounded w-full"
+              placeholder="Enter group name"
+              className="border-b border-[#122670] rounded w-80 outline-none ml-7 mt-4 mb-4 px-2 py-1"
             />
-            <div className="flex justify-end gap-2 mt-4">
+
+            {/* footer */}
+            <div className="flex justify-end gap-2 py-2 mt-4 border-t border-[#122670]">
               <button
-                className="px-4 py-2 bg-gray-300 rounded"
+                className="px-2 py-1 bg-gray-300 rounded"
                 onClick={() => setShowModal(false)}
               >
-                Hủy
+                Cancel
               </button>
               <button
-                className="px-4 py-2 bg-blue-500 text-white rounded"
+                className="px-2 py-1 mr-2 bg-[#122670] text-white rounded"
                 onClick={handleCreate}
               >
-                Tạo
+                Create
               </button>
             </div>
           </div>
