@@ -33,6 +33,28 @@ export default function Sidebar({ socket, setSelectedRoom, username }) {
       }
     });
 
+    socket.on("message", (msg) => {
+      setRooms((prev) =>
+        prev.map((room) => {
+          if (room.id === msg.roomId) {
+            return {
+              ...room,
+              message:
+                msg.message || (msg.file ? `File: ${msg.file.fileName}` : ""),
+              time:
+                msg.time ||
+                new Date(msg.createdAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false,
+                }),
+            };
+          }
+          return room;
+        })
+      );
+    });
+
     socket.on("userJoined", ({ username: joinedUser }) => {
       console.log("User joined:", joinedUser);
     });
@@ -41,10 +63,8 @@ export default function Sidebar({ socket, setSelectedRoom, username }) {
       console.error("Socket.IO connect error:", error)
     );
 
-    // Khi server thông báo room mới được tạo
     socket.on("roomCreated", (newRoom) => {
       setRooms((prev) => {
-        // tránh push trùng
         if (prev.some((room) => room.id === newRoom._id)) {
           return prev;
         }
@@ -65,17 +85,18 @@ export default function Sidebar({ socket, setSelectedRoom, username }) {
     return () => {
       socket.off("roomList");
       socket.off("userJoined");
+      socket.off("message");
       socket.off("connect_error");
     };
   }, [socket]);
 
   // Click room to join
   const handleJoinRoom = (roomId) => {
-    setSelectedRoom(roomId); // dùng _id luôn
+    setSelectedRoom(roomId); 
     setRooms((prev) =>
       prev.map((room) => ({
         ...room,
-        active: room.id === roomId, // so sánh với id
+        active: room.id === roomId, 
       }))
     );
   };
@@ -90,7 +111,7 @@ export default function Sidebar({ socket, setSelectedRoom, username }) {
     try {
       await axios.post("http://localhost:5000/createRoom", {
         name: newRoomName,
-        createdBy: username, // hoặc userId
+        createdBy: username, 
       });
       setNewRoomName("");
       setShowModal(false);
@@ -105,14 +126,15 @@ export default function Sidebar({ socket, setSelectedRoom, username }) {
   const handleLogout = async () => {
     try {
       await axios.post("http://localhost:5000/logout");
-      localStorage.removeItem("username"); 
+      localStorage.removeItem("username");
+      window.location.reload();
     } catch (error) {
       console.error("Logout error:", error.response?.data || error.message);
     }
   };
 
   return (
-    <aside className="flex w-96 h-screen text-xl bg-white border-r border-r-[#122670] ">
+    <aside className="flex w-96 h-screen text-xl bg-white border-r border-b border-[#122670] ">
       <div className="flex flex-col justify-between items-center w-1/5 h-full bg-[#122670] ">
         <AiFillWechat className="w-8 h-8 mt-4 text-amber-50" />
         <div className=" flex flex-col gap-6 text-amber-50">
@@ -149,7 +171,7 @@ export default function Sidebar({ socket, setSelectedRoom, username }) {
         />
       </div>
       <div className="">
-        <div className="text-black text-center my-4  font-bold text-3xl">
+        <div className="text-black text-center my-2 border-shadow font-bold text-3xl">
           Chats
         </div>
         {/* Search */}
@@ -164,7 +186,7 @@ export default function Sidebar({ socket, setSelectedRoom, username }) {
         </div>
 
         {/* Room List */}
-        <ul className="h-[86%] text overflow-y-auto  text-left ml-2">
+        <ul className="h-[83%] text overflow-y-auto  text-left ml-2">
           {rooms.map((room, i) => (
             <li
               key={room.id || i}
@@ -194,6 +216,9 @@ export default function Sidebar({ socket, setSelectedRoom, username }) {
             </li>
           ))}
         </ul>
+        <div className="flex justify-center items-center border-t border-[##122670] mt-2">
+          <span className="mt-2 font-bold">{username}</span>
+        </div>
       </div>
 
       {/* Modal create group */}
