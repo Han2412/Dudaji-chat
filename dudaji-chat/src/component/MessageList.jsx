@@ -2,50 +2,58 @@ import React, { useEffect, useRef } from "react";
 
 export default function MessageList({ messages }) {
   const messagesEndRef = useRef(null);
-console.log("Messages:", messages);
+ 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = messagesEndRef.current?.parentNode; // div overflow-y
+    if (!container) return;
+
+    const threshold = 150; // px khoảng cách gần cuối
+    const distanceFromBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight;
+
+    if (distanceFromBottom < threshold) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
- const renderFile = (file, text) => {
-  console.log("Rendering file:", file);
-  if (!file || !file.fileUrl) return text || "No content";
-  
-  const ext = file.fileName?.split(".").pop().toLowerCase();
+  const renderFile = (file, text) => {
+   
+    if (!file || !file.fileUrl) return text || "No content";
 
-  if (["jpg", "jpeg", "png", "gif"].includes(ext)) {
-    return (
-      <img
-        src={file.fileUrl}
-        alt={file.fileName}
-        className="max-w-full max-h-64 rounded"
-      /> 
-    );
-  } else if (["mp4", "webm", "ogg"].includes(ext)) {
-    return (
-      <video controls className="max-w-full max-h-64 rounded">
-        <source src={file.fileUrl} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-    );
-  } else {
-    return (
-      <a
-        href={file.fileUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-500 underline"
-      >
-        {text || `File: ${file.fileName || "Unknown"}`}
-      </a>
-    );
-  }
-};
+    const ext = file.fileName?.split(".").pop().toLowerCase();
 
+    if (["jpg", "jpeg", "png", "gif"].includes(ext)) {
+      return (
+        <img
+          src={file.fileUrl}
+          alt={file.fileName}
+          className="max-w-full max-h-64 rounded"
+        />
+      );
+    } else if (["mp4", "webm", "ogg"].includes(ext)) {
+      return (
+        <video controls className="max-w-full max-h-64 rounded">
+          <source src={file.fileUrl} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      );
+    } else {
+      return (
+        <a
+          href={file.fileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 underline"
+        >
+          {text || `File: ${file.fileName || "Unknown"}`}
+        </a>
+      );
+    }
+  };
 
   return (
     <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-4">
@@ -71,7 +79,11 @@ console.log("Messages:", messages);
               <span className="font-bold">{msg.user || "Unknown"}</span>
             </div>
 
-            <div>{renderFile(msg.file, msg.text)}</div>
+            <div>
+              {msg.text && <p className="mb-2">{msg.text}</p>}{" "}
+              {/* Hiển thị text nếu có */}
+              {msg.file && renderFile(msg.file)} {/* Hiển thị file nếu có */}
+            </div>
 
             <div
               className={`text-xs ${
