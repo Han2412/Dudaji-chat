@@ -1,29 +1,61 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import { defineConfig, globalIgnores } from 'eslint/config'
+import js from '@eslint/js';
+import globals from 'globals';
+import pluginReact from 'eslint-plugin-react';
+import pluginNode from 'eslint-plugin-node';
 
-export default defineConfig([
-  globalIgnores(['dist']),
+export default [
+  // Cấu hình cho các file frontend (JSX, JS trong src/component)
   {
-    files: ['**/*.{js,jsx}'],
-    extends: [
-      js.configs.recommended,
-      reactHooks.configs['recommended-latest'],
-      reactRefresh.configs.vite,
-    ],
+    files: ['src/component/**/*.{jsx,js}', 'src/**/*.{jsx,js}'],
+    plugins: {
+      react: pluginReact,
+    },
     languageOptions: {
-      ecmaVersion: 2020,
       globals: globals.browser,
       parserOptions: {
-        ecmaVersion: 'latest',
-        ecmaFeatures: { jsx: true },
+        ecmaVersion: 2021,
+        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
+    extends: [
+      js.configs.recommended,
+      pluginReact.configs.flat.recommended,
+    ],
+    rules: {
+      'react/prop-types': 'off', // Tắt nếu không dùng PropTypes
+    },
+    settings: {
+      react: {
+        version: 'detect', // Tự động phát hiện phiên bản React
+      },
+    },
+  },
+  // Cấu hình cho các file backend (JS trong src/model)
+  {
+    files: ['src/model/*.js', 'server/*.js'],
+    plugins: {
+      node: pluginNode,
+    },
+    languageOptions: {
+      globals: globals.node,
+      parserOptions: {
+        ecmaVersion: 2021,
         sourceType: 'module',
       },
     },
+    extends: [
+      js.configs.recommended,
+      'plugin:node/recommended',
+    ],
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      'node/no-unsupported-features/es-syntax': 'off', // Cho phép ES module
     },
   },
-])
+  // Bỏ qua các thư mục không cần lint
+  {
+    ignores: ['node_modules', 'dist', 'Uploads'],
+  },
+];
