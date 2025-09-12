@@ -65,29 +65,27 @@ The backend runs at [http://localhost:5000](http://localhost:5000).
 ## 📁 Project Structure
 
 ```
-dudaji-chat/
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── ChatArea.jsx
-│   │   │   ├── MessageInput.jsx
-│   │   │   ├── MessageList.jsx
-│   │   │   ├── Sidebar.jsx
-│   │   │   └── ChatHeader.jsx
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── package.json
-│   └── vite.config.js
-├── backend/
-│   ├── model/
-│   │   ├── Room.js
-│   │   ├── User.js
-│   │   └── Message.js
-│   ├── routes/
-│   ├── server.js
-│   ├── package.json
-│   └── cloudinary.js
-└── README.md
+frontend/
+├── node_modules/      # Dependency files
+├── src/               # Source code
+│   ├── assets/        # Static assets (e.g., vite.svg)
+│   ├── component/     # React components
+│   │   ├── Auth.jsx   # Authentication component
+│   │   ├── ChatArea.jsx # Chat area component
+│   │   ├── ChatHeader.jsx # Chat header component
+│   │   ├── MessageInput.jsx # Message input component
+│   │   ├── MessageList.jsx # Message list component
+│   │   └── Sidebar.jsx # Sidebar navigation
+│   ├── App.jsx        # Main app component
+│   ├── App.css        # App styles
+│   ├── index.css      # Global styles
+│   ├── index.html     # HTML entry point
+│   └── main.jsx       # JS entry point
+├── .eslint.config.js  # ESLint configuration
+├── package.json       # Project metadata and scripts
+├── package-lock.json  # Lock file for dependencies
+├── vite.config.js     # Vite configuration
+└── README.md          # This file
 ```
 
 ## 🧪 Linting
@@ -110,3 +108,4 @@ npm run lint
 3. Commit your changes (`git commit -m 'Add some feature'`)  
 4. Push to the branch (`git push origin feature/feature-name`)  
 5. Open a Pull Request
+
