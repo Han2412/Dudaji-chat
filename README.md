@@ -1,97 +1,112 @@
 # Dudaji-chat
 
-A simple web chat application built with **React.js**, **Vite**, and **Node.js/Express** for the backend.
+A full-stack web chat application built with **React.js**, **Vite**, and **Node.js**.
 
 ## 🚀 Features
 
 - List and create chat rooms
 - Join chat rooms
-- Real-time messaging in rooms (Socket.IO)
-- **Bonus (Advanced):**
-  - File transfer in chat rooms (Cloudinary)
-  - Video conferencing using WebRTC
+- Real-time messaging in rooms
+- **Bonus:** File transfer in chat rooms
+- **Bonus:** Video conferencing (WebRTC)
 
 ## 🛠️ Tech Stack
 
 - **Frontend:** React.js, Vite
-- **Backend:** Node.js, Express, Socket.IO
-- **Database:** MongoDB
+- **Backend:** Node.js, Express.js, MongoDB
 - **Styling:** Tailwind CSS
 - **Linting:** ESLint, Prettier
 - **Version Control:** Git, GitHub
-
-## 🌐 Live Demo
-
-Frontend deployed on Vercel: [https://dudaji-chat-jrbw.vercel.app/](https://dudaji-chat-jrbw.vercel.app/)  
-Backend deployed on Render: [https://chat-backend-1n0t.onrender.com/](https://chat-backend-1n0t.onrender.com/)
+- **Deployment:** Vercel (frontend), Render (backend)
 
 ## 📦 Getting Started
 
 ### 1. Clone the repository
 
-```sh
+```bash
 git clone https://github.com/Han2412/Dudaji-chat.git
 cd dudaji-chat
-2. Install dependencies
-sh
-Copy code
+```
+
+### 2. Install frontend dependencies
+
+```bash
+cd frontend
 npm install
-3. Start the development server
-sh
-Copy code
+```
+
+### 3. Install backend dependencies
+
+```bash
+cd ../backend
+npm install
+```
+
+### 4. Start development servers
+
+**Frontend:**
+
+```bash
+cd frontend
 npm run dev
-Visit http://localhost:5173 to view the app.
+```
 
-4. Backend Setup (Optional for local testing)
-Navigate to the backend folder (if separated) or root if fullstack.
+Visit [http://localhost:5173](http://localhost:5173) to view the app.
 
-Create a .env file with the following variables:
+**Backend:**
 
-env
-Copy code
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-CLOUD_NAME=your_cloudinary_cloud_name
-CLOUD_API_KEY=your_cloudinary_api_key
-CLOUD_API_SECRET=your_cloudinary_api_secret
-Run the backend:
-
-sh
-Copy code
+```bash
+cd backend
 npm start
-📁 Project Structure
-css
-Copy code
+```
+
+The backend runs at [http://localhost:5000](http://localhost:5000).
+
+## 📁 Project Structure
+
+```
 dudaji-chat/
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── Sidebar.jsx
 │   │   │   ├── ChatArea.jsx
+│   │   │   ├── MessageInput.jsx
 │   │   │   ├── MessageList.jsx
-│   │   │   └── MessageInput.jsx
+│   │   │   ├── Sidebar.jsx
+│   │   │   └── ChatHeader.jsx
 │   │   ├── App.jsx
 │   │   └── main.jsx
+│   ├── package.json
+│   └── vite.config.js
 ├── backend/
 │   ├── model/
+│   │   ├── Room.js
+│   │   ├── User.js
+│   │   └── Message.js
 │   ├── routes/
-│   └── server.js
-├── package.json
-├── vite.config.js
+│   ├── server.js
+│   ├── package.json
+│   └── cloudinary.js
 └── README.md
-🧪 Linting
+```
+
+## 🧪 Linting
+
 Run ESLint to check code style:
 
-sh
-Copy code
+```bash
 npm run lint
-🤝 Contributing
-Fork the repo
+```
 
-Create your feature branch (git checkout -b feature/feature-name)
+## 🌐 Deployment
 
-Commit your changes (git commit -m 'Add some feature')
+- **Frontend:** [Dudaji Chat on Vercel](https://dudaji-chat-jrbw.vercel.app/)
+- **Backend:** [Chat Backend on Render](https://chat-backend-1n0t.onrender.com/)
 
-Push to the branch (git push origin feature/feature-name)
+## 🤝 Contributing
 
-Open a Pull Request
+1. Fork the repo  
+2. Create your feature branch (`git checkout -b feature/feature-name`)  
+3. Commit your changes (`git commit -m 'Add some feature'`)  
+4. Push to the branch (`git push origin feature/feature-name`)  
+5. Open a Pull Request
