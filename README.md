@@ -8,7 +8,6 @@ A full-stack web chat application built with **React.js**, **Vite**, and **Node.
 - Join chat rooms
 - Real-time messaging in rooms
 - **Bonus:** File transfer in chat rooms
-- **Bonus:** Video conferencing (WebRTC)
 
 ## 🛠️ Tech Stack
 
@@ -108,4 +107,5 @@ npm run lint
 3. Commit your changes (`git commit -m 'Add some feature'`)  
 4. Push to the branch (`git push origin feature/feature-name`)  
 5. Open a Pull Request
+
 
